@@ -1,98 +1,53 @@
 {% extends "base.html" %}{% block content %}
-{% for result in result_list %}
-{{ result.name }}
-{% endfor %}
-<div class="grid grid-cols-5 gap-2 w-1/2">
-  <label class="form-control w-full col-span-5">
-    <div class="label">
-      <span class="label-text w-full text-center">名稱</span>
-    </div>
-    <input
-      type="text"
-      name="name"
-      class="input input-bordered w-full"
-      value="{{ name }}"
-    />
-  </label>
-
-  <label class="form-control w-full max-w-xs">
-    <div class="label">
-      <span class="label-text w-full text-center">請輸入指令數量</span>
-    </div>
-    <input
-      type="text"
-      name="instructions"
-      placeholder="N"
-      class="input input-bordered w-full max-w-xs"
-    />
-  </label>
-    <label class="form-control w-full max-w-xs">
-    <div class="label">
-      <span class="label-text w-full text-center">請輸入行數</span>
-    </div>
-    <input
-      type="text"
-      name="rows"
-      placeholder="R"
-      class="input input-bordered w-full max-w-xs"
-    />
-  </label>
-    <label class="form-control w-full max-w-xs">
-    <div class="label">
-      <span class="label-text w-full text-center">請輸入列數</span>
-    </div>
-    <input
-      type="text"
-      name="columns"
-      placeholder="C"
-      class="input input-bordered w-full max-w-xs"
-    />
-  </label>
-    <label class="form-control w-full max-w-xs">
-    <div class="label">
-      <span class="label-text w-full text-center">請輸入起始行</span>
-    </div>
-    <input
-      type="text"
-      name="start_row"
-      placeholder="SR"
-      class="input input-bordered w-full max-w-xs"
-    />
-  </label>
-  </label>
-    <label class="form-control w-full max-w-xs">
-    <div class="label">
-      <span class="label-text w-full text-center">請輸入起始列</span>
-    </div>
-    <input
-      type="text"
-      name="start_column"
-      placeholder="SC"
-      class="input input-bordered w-full max-w-xs"
-    />
-  </label>
-
-  <label class="form-control w-full col-span-5">
-    <div class="label">
-      <span class="label-text w-full text-center">請輸入移動指令</span>
-    </div>
-    <input
-      type="text"
-      name="position"
-      class="input input-bordered w-full"
-    />
-  </label>
-  <label class="form-control w-full col-span-5">
-    <div class="label">
-      <span class="label-text w-full text-center">Output</span>
-    </div>
-    <input
-      type="text"
-      name="result_case"
-      class="input input-bordered w-full"
-      value="{{ result_case }}"
-    />
-  </label>
-<a herf="{% url 'robot:index' %}" class="btn btn-outline btn-warning w-full col-start-5 mt-6">完成</a>
-</form>
+<div class="overflow-auto">
+  <table class="table table-4xl text-xl">
+    <thead>
+      <tr>
+        <th></th>
+        <th>名稱</th>
+        <th>指令數量</th>
+        <th>行數</th>
+        <th>列數</th>
+        <th>起始行</th>
+        <th>起始列</th>
+        <th>移動指令</th>
+        <th class="text-red-400">Output</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for result in result_list %}
+      <tr class="hover">
+        <th></th>
+        <td>{{ name }}</td>
+        <td>{{ result.instructions }}</td>
+        <td>{{ result.rows }}</td>
+        <td>{{ result.columns }}</td>
+        <td>{{ result.start_row }}</td>
+        <td>{{ result.start_column }}</td>
+        <td>{{ result.position }}</td>
+        <td class="text-red-400">{{ result.result_case }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <th></th>
+        <th>名稱</th>
+        <th>指令數量</th>
+        <th>行數</th>
+        <th>列數</th>
+        <th>起始行</th>
+        <th>起始列</th>
+        <th>移動指令</th>
+        <th class="text-red-400">Output</th>
+      </tr>
+    </tfoot>
+    <a
+      href="{% url 'robot:index' %}"
+      class="btn btn-outline btn-warning w-full col-start-5 mt-6"
+    >
+      返回
+    </a>
+  </table>
+</div>
 {% endblock content %}

@@ -1,10 +1,11 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 
 class Client(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     cases = models.PositiveIntegerField(
         validators=[
             MinValueValidator(0),
@@ -54,3 +55,10 @@ class Construct(models.Model):
     result_case = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        super().clean()
+        if self.start_row >= self.rows:
+            raise ValidationError("起始行必須小於行數。")
+        if self.start_column >= self.columns:
+            raise ValidationError("起始列必須小於列數。")

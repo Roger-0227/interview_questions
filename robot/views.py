@@ -4,6 +4,7 @@ from django.views.decorators.http import require_POST
 from robot.form.construct_form import ConstructForm
 from robot.form.client_form import ClientForm
 from robot.models import Client, Construct
+from django.contrib import messages
 
 
 def index(request):
@@ -13,7 +14,11 @@ def index(request):
 @require_POST
 def client(request):
     client_form = ClientForm(request.POST)
-    client_form.save()
+    try:
+        client_form.save()
+    except Exception as e:
+        messages.error(request, "重複名稱，請重新輸入")
+        return render(request, "pages/index.html", {"form": client_form})
     content = {
         "form": client_form,
         "number": 1,
@@ -27,11 +32,26 @@ def client(request):
 def create(request):
     form = ConstructForm(request.POST)
     cases = request.POST.get("cases")
-    name = request.POST.get("name")
     number = request.POST.get("number")
+    name = request.POST.get("name")
     result_list = Construct.objects.filter(name__name=name)
-    breakpoint()
-    if int(number) <= int(cases):
+
+    if int(cases) == 1:
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.name = Client.objects.filter(name=name).first()
+            form.cases = Client.objects.filter(cases=cases).first()
+            form.result_case = output(request.POST, number)
+            form.save()
+            return render(
+                request,
+                "pages/result.html",
+                {
+                    "name": name,
+                    "result_list": result_list,
+                },
+            )
+    elif int(number) <= int(cases):
         if form.is_valid():
             form = form.save(commit=False)
             form.name = Client.objects.filter(name=name).first()
@@ -45,20 +65,19 @@ def create(request):
                 "number": number,
                 "cases": cases,
             }
-
-            return render(request, "pages/create.html", content)
-    return render(
-        request,
-        "pages/result.html",
-        {
-            "name": name,
-            "result_list": result_list,
-        },
-    )
+        return render(request, "pages/create.html", content)
+    else:
+        return render(
+            request,
+            "pages/result.html",
+            {
+                "name": name,
+                "result_list": result_list,
+            },
+        )
 
 
 def output(data, number):
-    # robot = Construct.objects.filter()
     start_x, start_y = int(data["start_column"]), int(data["start_row"])
     original_step = (start_x, start_y)
     position = data["position"]
@@ -85,7 +104,3 @@ def output(data, number):
             original_step = compare(1, 0)
 
     return f"Case #{number}: {original_step[1]} {original_step[0]}"
-
-
-# def result(request, id):
-#     pass

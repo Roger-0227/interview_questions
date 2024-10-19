@@ -3,13 +3,22 @@ from django.db import models
 from django.utils import timezone
 
 
-class Construct(models.Model):
+class Client(models.Model):
     name = models.CharField(max_length=50)
     cases = models.PositiveIntegerField(
         validators=[
             MinValueValidator(0),
             MaxValueValidator(101),
         ]
+    )
+
+
+class Construct(models.Model):
+    name = models.ForeignKey(
+        Client, on_delete=models.CASCADE, related_name="construct_name"
+    )
+    cases = models.ForeignKey(
+        Client, on_delete=models.CASCADE, related_name="construct_cases"
     )
     instructions = models.PositiveIntegerField(
         validators=[
@@ -43,5 +52,5 @@ class Construct(models.Model):
     )
     position = models.CharField(max_length=5000)
     result_case = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)

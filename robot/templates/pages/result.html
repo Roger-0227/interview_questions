@@ -1,10 +1,8 @@
 {% extends "base.html" %}{% block content %}
-
-<form method="POST" action="{% url 'robot:create' %}" class="grid grid-cols-5 gap-2 w-1/2">
-{% csrf_token %}
-  <h2 name="number" class="text-center col-span-5 text-2xl text-red-500">Case #{{ number }}</h2>
-  <input type="hidden" name="number" value="{{ number }}">
-  <input type="hidden" name="cases" value="{{ cases }}"/>
+{% for result in result_list %}
+{{ result.name }}
+{% endfor %}
+<div class="grid grid-cols-5 gap-2 w-1/2">
   <label class="form-control w-full col-span-5">
     <div class="label">
       <span class="label-text w-full text-center">名稱</span>
@@ -81,10 +79,20 @@
     <input
       type="text"
       name="position"
-      placeholder="N,S,E,W"
       class="input input-bordered w-full"
     />
   </label>
-<button type="submit" class="btn btn-outline btn-warning w-full col-start-5 mt-6">確認送出</button>
+  <label class="form-control w-full col-span-5">
+    <div class="label">
+      <span class="label-text w-full text-center">Output</span>
+    </div>
+    <input
+      type="text"
+      name="result_case"
+      class="input input-bordered w-full"
+      value="{{ result_case }}"
+    />
+  </label>
+<a herf="{% url 'robot:index' %}" class="btn btn-outline btn-warning w-full col-start-5 mt-6">完成</a>
 </form>
 {% endblock content %}

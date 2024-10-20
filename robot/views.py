@@ -7,6 +7,10 @@ from robot.models import Client, Construct
 from django.contrib import messages
 
 
+def home(request):
+    return render(request, "pages/home.html")
+
+
 def index(request):
     return render(request, "pages/index.html")
 
@@ -51,7 +55,7 @@ def create(request):
                     "result_list": result_list,
                 },
             )
-    elif int(number) <= int(cases):
+    elif int(number) < int(cases) and int(cases) != 1:
         if form.is_valid():
             form = form.save(commit=False)
             form.name = Client.objects.filter(name=name).first()
@@ -65,8 +69,15 @@ def create(request):
                 "number": number,
                 "cases": cases,
             }
-        return render(request, "pages/create.html", content)
-    else:
+            return render(request, "pages/create.html", content)
+    elif int(number) == int(cases) and int(cases) != 1:
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.name = Client.objects.filter(name=name).first()
+            form.cases = Client.objects.filter(cases=cases).first()
+            form.result_case = output(request.POST, number)
+            form.save()
+
         return render(
             request,
             "pages/result.html",

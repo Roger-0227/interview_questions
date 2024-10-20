@@ -1,5 +1,9 @@
 {% extends "base.html" %}{% block content %}
-
+{% for field in form %}
+    {% for error in field.errors %}
+        <div class="error">{{ error }}</div>
+    {% endfor %}
+{% endfor %}
 <form method="POST" action="{% url 'robot:create' %}" class="grid grid-cols-5 gap-2 w-1/2">
 {% csrf_token %}
   <h2 name="number" class="text-center col-span-5 text-2xl text-red-500">Case #{{ number }}</h2>
@@ -81,7 +85,7 @@
     <input
       type="text"
       name="position"
-      placeholder="N,S,E,W"
+      placeholder="NSEW"
       class="input input-bordered w-full"
     />
   </label>

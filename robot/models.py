@@ -2,6 +2,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+import re
 
 
 class Client(models.Model):
@@ -62,3 +63,5 @@ class Construct(models.Model):
             raise ValidationError("起始行必須小於行數。")
         if self.start_column >= self.columns:
             raise ValidationError("起始列必須小於列數。")
+        if not re.match(r"^[NSWE]+$", self.position.upper()):
+            raise ValidationError("必須符合字元 (N S W E)")
